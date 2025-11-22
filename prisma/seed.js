@@ -1,6 +1,16 @@
 import prisma from '../src/config/db.js';
 
 async function seed() {
+
+  // This will remove all the data from the table when you seed it so be CAREFUL!!!!!
+  await prisma.$transaction([
+    prisma.watchlist.deleteMany(),
+    prisma.review.deleteMany(),
+    prisma.movie.deleteMany(),
+    prisma.genre.deleteMany(),
+    prisma.user.deleteMany(),
+  ]);
+
   // Users
   const alice = await prisma.user.create({
     data: {
@@ -21,25 +31,21 @@ async function seed() {
   });
 
   // Genres
-  const action = await prisma.genre.create({
-    data: { name: "Action" },
-  });
-
-  const drama = await prisma.genre.create({
-    data: { name: "Drama" },
-  });
-
-  const comedy = await prisma.genre.create({
-    data: { name: "Comedy" },
-  });
+  const action = await prisma.genre.create({ data: { name: "Action" } });
+  const drama = await prisma.genre.create({ data: { name: "Drama" } });
+  const comedy = await prisma.genre.create({ data: { name: "Comedy" } });
+  const thriller = await prisma.genre.create({ data: { name: "Thriller" } });
 
   // Movies
+
   const inception = await prisma.movie.create({
     data: {
       title: "Inception",
       releaseYear: 2010,
       description: "A thief enters dreams to steal secrets.",
-      genreId: action.id,
+      genre: {
+        connect: [{ id: action.id }, { id: thriller.id }],
+      },
     },
   });
 
@@ -48,7 +54,9 @@ async function seed() {
       title: "The Dark Knight",
       releaseYear: 2008,
       description: "A vigilante fights crime in Gotham.",
-      genreId: action.id,
+      genre: {
+        connect: [{ id: action.id }, { id: thriller.id }],
+      },
     },
   });
 
@@ -57,7 +65,9 @@ async function seed() {
       title: "The Pursuit of Happyness",
       releaseYear: 2006,
       description: "A man struggles to build a better life.",
-      genreId: drama.id,
+      genre: {
+        connect: [{ id: drama.id }],
+      },
     },
   });
 

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import movieRoutes from './routes/movieRoutes.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,6 +10,14 @@ app.use(cors());
 app.use(morgan('tiny'));
 
 app.use(express.json());
+
+// To check the Health of the api
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+// This all the movies api are
+app.use('/movies', movieRoutes);
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
