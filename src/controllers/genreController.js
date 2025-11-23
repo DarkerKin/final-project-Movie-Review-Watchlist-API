@@ -1,4 +1,4 @@
-import { createGenre, getAllGenres, getGenreById } from "../services/genreService.js";
+import { createGenre, deleteGenre, getAllGenres, getGenreById, updateGenre } from "../services/genreService.js";
 
 export async function getGenresHandler(req, res){
     const allGenres = await getAllGenres();
@@ -21,9 +21,21 @@ export async function createGenreHandler(req, res){
 }
 
 export async function updateGenreByIdHandler(req, res){
-    
+    if(!req.body){
+        const error = new Error(`please check the header for the content type`)
+        error.status = 500;
+        throw error;
+    }
+    let id = parseInt(req.params.id)
+    const {name} = req.body;
+    const genreData = {}
+    if(name) genreData.name = name;
+    const updatedGenre = await updateGenre(id, genreData);
+    res.status(200).json(updatedGenre)
 }
 
 export async function deleteGenreByIdHandler(req, res){
-    
+    let id = parseInt(req.params.id)
+    await deleteGenre(id);
+    res.status(204).send();
 }
