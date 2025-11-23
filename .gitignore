@@ -3,3 +3,4 @@ node_modules
 .DS_STORE
 /src/generated/prisma
 .vscode
+test.js

@@ -3,6 +3,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import movieRoutes from './routes/movieRoutes.js'
 import genreRoutes from './routes/genreRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import authRoutes from './routes/authRoutes.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +23,11 @@ app.get('/health', (req, res) => {
 app.use('/movies', movieRoutes);
 
 app.use('/genres',genreRoutes);
+
+app.use('/auth', authRoutes);
+
+app.use('/users',userRoutes);
+
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
