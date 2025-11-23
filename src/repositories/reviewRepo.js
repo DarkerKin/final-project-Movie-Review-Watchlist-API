@@ -63,3 +63,9 @@ export async function deleteReviewInDB(id) {
   await prisma.review.delete({ where: { id } });
   return;
 }
+
+export async function getReviewByUserID(userId) {
+  return await prisma.review.findMany({
+    where: { userId }
+  })
+}

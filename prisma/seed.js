@@ -1,4 +1,6 @@
 import prisma from '../src/config/db.js';
+import bcrypt from 'bcrypt';
+
 
 async function seed() {
 
@@ -16,7 +18,7 @@ async function seed() {
     data: {
       username: "alice",
       email: "alice@example.com",
-      password: "hashed_pass_1",
+      password: await bcrypt.hash('alice123456', 10),
       role: "USER",
     },
   });
@@ -25,7 +27,7 @@ async function seed() {
     data: {
       username: "bob",
       email: "bob@example.com",
-      password: "hashed_pass_2",
+      password: await bcrypt.hash('bob123456', 10),
       role: "ADMIN",
     },
   });

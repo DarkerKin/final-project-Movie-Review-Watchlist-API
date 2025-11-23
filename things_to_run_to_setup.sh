@@ -19,3 +19,5 @@ npx prisma studio
 # This is to run the api 
 npm run dev
 
+# To create a jwt secret to put in .env
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"

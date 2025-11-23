@@ -4,8 +4,6 @@ import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import movieRoutes from './routes/movieRoutes.js'
-import reviewRoutes from './routes/reviewRoutes.js'
-import watchlistRoutes from './routes/watchlistRoutes.js'
 
 const swaggerDocument = YAML.load('./openapi.yaml');
 const app = express();
@@ -25,9 +23,6 @@ app.get('/health', (req, res) => {
 
 // This all the movies api are
 app.use('/movies', movieRoutes);
-app.use('/reviews', reviewRoutes);
-app.use('/watchlists', watchlistRoutes);
-
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
