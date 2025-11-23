@@ -1,0 +1,653 @@
+openapi: 3.1.0
+info:
+  title: Movie Review & Watchlist API
+  version: 1.0.0
+  description: |
+    REST API for managing movies, genres, reviews, users and personal watchlists.
+servers:
+  - url: https://IWillreplaceThisLater.com
+    description: Production server
+  - url: http://localhost:3000
+    description: Local development
+
+tags:
+  - name: Auth
+    description: Authentication endpoints (register, login)
+  - name: Users
+    description: User resource and profile
+  - name: Movies
+    description: Movie catalog
+  - name: Genres
+    description: Movie genres
+  - name: Reviews
+    description: Movie reviews
+  - name: Watchlists
+    description: Movie watchlists
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: "Unauthorized"
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          description: User role, e.g. "user" or "admin"
+      required: [id, username, email]
+      example:
+        id: "7a8b9cde-1234-4f56-9abc-0d1e2f3a4b5c"
+        username: "joeD"
+        email: "joeD@example.com"
+        role: "user"
+
+    AuthRegister:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required: [username, email, password]
+      example:
+        username: "joeD"
+        email: "joeD@example.com"
+        password: "SuperSecret123"
+
+    AuthLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required: [email, password]
+      example:
+        email: "joeD@example.com"
+        password: "SuperSecret123"
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT to be used as Bearer token
+      example:
+        token: "eyJhbGciOiJI..."
+
+    Genre:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required: [id, name]
+      example:
+        id: 1
+        name: "Action"
+
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        releaseYear:
+          type: integer
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genre'
+      required: [id, title]
+      example:
+        id: 123
+        title: "The Example Movie"
+        description: "A sample film used for API documentation."
+        releaseYear: 2021
+        genres:
+          - id: 1
+            name: "Action"
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+        movieId:
+          type: integer
+        userId:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, movieId, userId, rating]
+      example:
+        id: 456
+        movieId: 123
+        userId: "7a8b9cde-1234-4f56-9abc-0d1e2f3a4b5c"
+        rating: 4
+        comment: "Enjoyed the pacing and visuals."
+        createdAt: "2025-11-01T12:34:56Z"
+
+    WatchlistItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        movie:
+          $ref: '#/components/schemas/Movie'
+        addedAt:
+          type: string
+          format: date-time
+      required: [id, userId, movie]
+      example:
+        id: 789
+        userId: "7a8b9cde-1234-4f56-9abc-0d1e2f3a4b5c"
+        movie:
+          id: 123
+          title: "The Example Movie"
+        addedAt: "2025-11-20T09:00:00Z"
+
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      requestBody:
+        description: User registration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRegister'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Authenticate and obtain a JWT
+      requestBody:
+        description: Credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthLogin'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get profile for the currently authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/schemas/Error'
+
+    put:
+      tags: [Users]
+      summary: Update profile for the currently authenticated user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/schemas/Error'
+
+  /movies:
+    get:
+      tags: [Movies]
+      summary: List movies (public)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: genre
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Array of movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+
+    post:
+      tags: [Movies]
+      summary: Create a new movie (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                releaseYear:
+                  type: integer
+                genreIds:
+                  type: array
+                  items:
+                    type: integer
+              required: [title]
+            example:
+              title: "New Movie"
+              description: "Synopsis..."
+              releaseYear: 2024
+              genreIds: [1, 3]
+      responses:
+        '201':
+          description: Movie created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden (not admin)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /movies/{movieId}:
+    parameters:
+      - name: movieId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Movies]
+      summary: Get movie details (public)
+      responses:
+        '200':
+          description: Movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags: [Movies]
+      summary: Update movie (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                releaseYear:
+                  type: integer
+                genreIds:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Updated movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags: [Movies]
+      summary: Delete movie (admin only)
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/schemas/Error'
+        '403':
+          $ref: '#/components/schemas/Error'
+
+  /genres:
+    get:
+      tags: [Genres]
+      summary: List all genres
+      responses:
+        '200':
+          description: Array of genres
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Genre'
+    post:
+      tags: [Genres]
+      summary: Create a genre (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required: [name]
+      responses:
+        '201':
+          description: Genre created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genre'
+
+  /reviews:
+    post:
+      tags: [Reviews]
+      summary: Create a review for a movie
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                movieId:
+                  type: integer
+                rating:
+                  type: integer
+                comment:
+                  type: string
+              required: [movieId, rating]
+            example:
+              movieId: 123
+              rating: 5
+              comment: "Masterpiece!"
+      responses:
+        '201':
+          description: Review created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '401':
+          $ref: '#/components/schemas/Error'
+
+  /movies/{movieId}/reviews:
+    parameters:
+      - name: movieId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Reviews]
+      summary: List reviews for a movie (public)
+      responses:
+        '200':
+          description: Array of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+
+  /reviews/{reviewId}:
+    parameters:
+      - name: reviewId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Reviews]
+      summary: Get a single review
+      responses:
+        '200':
+          description: Review retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '404':
+          $ref: '#/components/schemas/Error'
+    put:
+      tags: [Reviews]
+      summary: Update a review (author or admin)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                comment:
+                  type: string
+      responses:
+        '200':
+          description: Updated review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '401':
+          $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Reviews]
+      summary: Delete a review (author or admin)
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/schemas/Error'
+        '403':
+          $ref: '#/components/schemas/Error'
+
+  /watchlists:
+    get:
+      tags: [Watchlists]
+      summary: Get current user's watchlist
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Array of watchlist items for the authenticated user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WatchlistItem'
+        '401':
+          $ref: '#/components/schemas/Error'
+
+    post:
+      tags: [Watchlists]
+      summary: Add a movie to the current user's watchlist
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                movieId:
+                  type: integer
+              required: [movieId]
+            example:
+              movieId: 123
+      responses:
+        '201':
+          description: Watchlist item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchlistItem'
+        '401':
+          $ref: '#/components/schemas/Error'
+
+  /watchlists/{itemId}:
+    parameters:
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: integer
+    delete:
+      tags: [Watchlists]
+      summary: Remove an item from the current user's watchlist
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Removed
+        '401':
+          $ref: '#/components/schemas/Error'
+        '403':
+          $ref: '#/components/schemas/Error'
+
+security:
+  - bearerAuth: []

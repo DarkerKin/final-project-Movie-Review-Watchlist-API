@@ -1,14 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 import movieRoutes from './routes/movieRoutes.js'
 import reviewRoutes from './routes/reviewRoutes.js'
 import watchlistRoutes from './routes/watchlistRoutes.js'
 
-
+const swaggerDocument = YAML.load('./openapi.yaml');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(morgan('tiny'));
 
