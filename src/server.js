@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import movieRoutes from './routes/movieRoutes.js'
+import genreRoutes from './routes/genreRoutes.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,8 @@ app.get('/health', (req, res) => {
 
 // This all the movies api are
 app.use('/movies', movieRoutes);
+
+app.use('/genres',genreRoutes);
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
