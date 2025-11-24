@@ -1,9 +1,10 @@
 import prisma from '../config/db.js';
 
 export async function getAllReviewsFromDB(filter = {}) {
-  // This can contain {movieId}
+  // This can contain {movieId, userId}
   const where = {};
   if (filter.movieId) where.movieId = filter.movieId;
+  if (filter.userId) where.userId = filter.userId;
 
   const reviews = await prisma.review.findMany({
     where,
@@ -66,6 +67,11 @@ export async function deleteReviewInDB(id) {
 
 export async function getReviewByUserID(userId) {
   return await prisma.review.findMany({
-    where: { userId }
-  })
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      user: { select: { id: true, username: true } },
+      movie: { select: { id: true, title: true } },
+    },
+  });
 }

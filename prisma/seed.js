@@ -13,6 +13,13 @@ async function seed() {
     prisma.user.deleteMany(),
   ]);
 
+  // Reset auto-increment sequences to start from 1
+  await prisma.$executeRaw`ALTER SEQUENCE "User_id_seq" RESTART WITH 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "Genre_id_seq" RESTART WITH 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "Movie_id_seq" RESTART WITH 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "Review_id_seq" RESTART WITH 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "Watchlist_id_seq" RESTART WITH 1`;
+
   // Users
   const alice = await prisma.user.create({
     data: {

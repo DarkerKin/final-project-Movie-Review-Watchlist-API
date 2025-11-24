@@ -2,10 +2,12 @@ import { getAllReviews, getReviewById, createReview, updateReview, deleteReview,
 
 export async function getReviewsHandler(req, res) {
   try {
-    // support GET /reviews and GET /reviews?movieId=1
+    // support GET /reviews, GET /reviews?movieId=1, GET /reviews?userId=1, or both
     const movieId = req.query.movieId ? parseInt(req.query.movieId, 10) : undefined;
+    const userId = req.query.userId ? parseInt(req.query.userId, 10) : undefined;
     const filter = {};
     if (movieId) filter.movieId = movieId;
+    if (userId) filter.userId = userId;
     const reviews = await getAllReviews(filter);
     res.status(200).json(reviews);
   } catch (err) {

@@ -5,7 +5,6 @@ export async function getUserWatchlistFromDB(userId){
         where:{userId}
     })
 }
-import prisma from '../config/db.js';
 
 export async function getAllWatchlistsFromDB(filter = {}) {
   const where = {};

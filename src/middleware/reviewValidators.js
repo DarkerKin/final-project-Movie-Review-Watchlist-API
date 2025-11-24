@@ -54,5 +54,9 @@ export const getReviewsValidators = [
     .optional()
     .isInt({ gt: 0 }).withMessage('movieId must be a positive integer')
     .toInt(),
+  query('userId')
+    .optional()
+    .isInt({ gt: 0 }).withMessage('userId must be a positive integer')
+    .toInt(),
   handleValidationErrors,
 ];
