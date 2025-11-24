@@ -1,5 +1,6 @@
 import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from './handleValidationErrors.js';
+import { getWatchlistById } from '../services/watchlistService.js';
 
 export const createWatchlistValidators = [
   body('userId')
@@ -52,3 +53,17 @@ export const getWatchlistsValidators = [
     .toInt(),
   handleValidationErrors,
 ];
+
+export async function checkIfUserWatchlist(req,res,next){
+  let id = parseInt(req.params.id);
+  let watchlist = await getWatchlistById(id);
+
+  if (!watchlist) {
+    return res.status(404).json({ message: 'watchlist not found' });
+  }
+
+  if (watchlist.userId !== req.user.id) {
+    return res.status(403).json({ message: 'forbidden' });
+  }
+  next();
+}

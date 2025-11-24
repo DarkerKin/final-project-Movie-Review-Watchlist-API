@@ -1,5 +1,6 @@
 import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from './handleValidationErrors.js';
+import { getReviewByIdFromDB } from '../repositories/reviewRepo.js';
 
 export const createReviewValidators = [
   body('userId')
@@ -56,3 +57,16 @@ export const getReviewsValidators = [
     .toInt(),
   handleValidationErrors,
 ];
+
+export async function checkIfUserTypedTheReview(req,res,next){
+  let id = parseInt(req.params.id);
+  let review = await getReviewByIdFromDB(id);
+  if (!review) {
+    return res.status(404).json({ message: 'review not found' });
+  }
+  
+   if (review.userId !== req.user.id) {
+    return res.status(403).json({ message: 'forbidden' });
+  }
+  next();
+}
