@@ -1,4 +1,5 @@
 import {getAllMoviesFromDB, getMovieByIdFromDB,createMovieInDB,updateMovieInDB, deleteMovieFromDB} from '../repositories/movieRepo.js'
+import {  getMovieReviewFromDB } from '../repositories/reviewRepo.js';
 
 export async function getAllMovies(){
     return await getAllMoviesFromDB();
@@ -32,4 +33,9 @@ export async function deleteMovie(id){
         error.status = 404;
         throw error;
     }
+}
+
+export async function getMovieReview(id){
+    const movieReview = await getMovieReviewFromDB(id);
+    return movieReview;
 }

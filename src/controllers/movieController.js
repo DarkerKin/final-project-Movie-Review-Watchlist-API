@@ -1,4 +1,4 @@
-import {getAllMovies, getMovieById, createMovie,updateMovie, deleteMovie} from '../services/movieService.js'
+import {getAllMovies, getMovieById, createMovie,updateMovie, deleteMovie, getMovieReview} from '../services/movieService.js'
 
 export async function getMoviesHandler(req, res){
     let allMovies = await getAllMovies();
@@ -71,4 +71,10 @@ export async function deleteMovieHandler(req,res){
     let id = parseInt(req.params.id)
     await deleteMovie(id);
     res.status(204).send();
+}
+
+export async function getMovieReviewHandler(req, res) {
+  let id = parseInt(req.params.id);
+  let movieReview = await getMovieReview(id);
+  res.status(200).json(movieReview);
 }
