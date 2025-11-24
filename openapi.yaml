@@ -5,7 +5,7 @@ info:
   description: |
     REST API for managing movies, genres, reviews, users and personal watchlists.
 servers:
-  - url: https://IWillreplaceThisLater.com
+  - url: https://final-project-movie-review-watchlist-api-47j0.onrender.com
     description: Production server
   - url: http://localhost:3000
     description: Local development
