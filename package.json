@@ -7,24 +7,31 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "node --env-file=.env --watch src/server.js"
+    "dev": "node --env-file=.env --watch src/server.js",
+    "seed": "node prisma/seed.js",
+    "real-dev": "nodemon src/server.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "globals": "^16.2.0",
+    "nodemon": "^3.1.11",
     "prettier": "^3.6.1",
     "prisma": "^6.12.0",
     "supertest": "^7.1.4"
   },
   "dependencies": {
-    "morgan": "^1.10.0",
-    "@prisma/client": "^6.12.0",
+    "@prisma/client": "^6.19.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
     "express-validator": "^7.2.1",
-    "jsonwebtoken": "^9.0.2"
+    "js-yaml": "^4.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   }
 }

@@ -5,11 +5,76 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
+
+// Role attribute
+enum Role {
+  USER
+  ADMIN
+}
+
+// Users table
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String    @unique
+  password String
+  role Role @default(USER)
+
+  reviews      Review[]
+  watchlists   Watchlist[]
+}
+
+
+model Movie {
+  id          Int        @id @default(autoincrement())
+  title       String
+  releaseYear Int
+  description String?
+
+  genre       Genre[]      @relation("MovieGenres")
+  reviews     Review[]
+  watchlists  Watchlist[]
+}
+
+
+model Genre {
+  id     Int       @id @default(autoincrement())
+  name   String    @unique
+
+  movies Movie[] @relation("MovieGenres")
+}
+
+
+model Review {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  movieId   Int
+  rating    Int
+  comment   String?
+  createdAt DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  movie     Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
+}
+
+
+model Watchlist {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  movieId   Int
+  addedAt   DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  movie     Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+}
+

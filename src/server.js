@@ -1,7 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import movieRoutes from './routes/movieRoutes.js'
+import genreRoutes from './routes/genreRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import authRoutes from './routes/authRoutes.js'
+import reviewRoutes from './routes/reviewRoutes.js'
+import watchlistRoutes from './routes/watchlistRoutes.js'
 
+
+const swaggerDocument = YAML.load('./docs/openapi.yaml');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
@@ -9,6 +19,28 @@ app.use(cors());
 app.use(morgan('tiny'));
 
 app.use(express.json());
+
+// To check the Health of the api
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// This all the movies api are
+app.use('/movies', movieRoutes);
+
+app.use('/genres',genreRoutes);
+
+app.use('/auth', authRoutes);
+
+app.use('/users',userRoutes);
+
+app.use('/reviews', reviewRoutes);
+
+// need to make sure the user are only ones that can change the watchlist
+app.use('/watchlists', watchlistRoutes);
+
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
