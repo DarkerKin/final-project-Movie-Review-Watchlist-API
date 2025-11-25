@@ -412,7 +412,7 @@ paths:
 
     post:
       tags: [Movies]
-      summary: Create a new movie
+      summary: Create a new movie (Admin)
       requestBody:
         required: true
         content:
@@ -476,7 +476,7 @@ paths:
 
     put:
       tags: [Movies]
-      summary: Update movie
+      summary: Update movie (Admin)
       requestBody:
         required: true
         content:
@@ -516,7 +516,7 @@ paths:
 
     delete:
       tags: [Movies]
-      summary: Delete movie
+      summary: Delete movie (Admin)
       responses:
         '204':
           description: Deleted
@@ -542,7 +542,7 @@ paths:
                   $ref: '#/components/schemas/Genre'
     post:
       tags: [Genres]
-      summary: Create a genre
+      summary: Create a genre (Admin)
       requestBody:
         required: true
         content:
@@ -592,7 +592,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     put:
       tags: [Genres]
-      summary: Update genre
+      summary: Update genre (Admin)
       requestBody:
         required: true
         content:
@@ -624,7 +624,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     delete:
       tags: [Genres]
-      summary: Delete genre
+      summary: Delete genre (Admin)
       responses:
         '204':
           description: Deleted
@@ -638,18 +638,13 @@ paths:
   /reviews:
     get:
       tags: [Reviews]
-      summary: List reviews with optional filters
+      summary: List reviews with optional filters (Admin)
       parameters:
         - name: movieId
           in: query
           schema:
             type: integer
           description: Filter by movie ID
-        - name: userId
-          in: query
-          schema:
-            type: integer
-          description: Filter by user ID
       responses:
         '200':
           description: Array of reviews
@@ -768,7 +763,7 @@ paths:
   /watchlist:
     get:
       tags: [Watchlists]
-      summary: Get watchlist items with optional filters
+      summary: Get watchlist items with optional filters (Admin)
       parameters:
         - name: userId
           in: query
