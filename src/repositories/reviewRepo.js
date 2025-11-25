@@ -7,7 +7,6 @@ export async function getReviewByUserID(userId) {
 }
 
 export async function getAllReviewsFromDB(filter = {}) {
-  // filter can contain { movieId, userId }
   const where = {};
   if (filter.movieId) where.movieId = filter.movieId;
   if (filter.userId) where.userId = filter.userId;
@@ -24,7 +23,7 @@ export async function getAllReviewsFromDB(filter = {}) {
 }
 
 export async function getReviewByIdFromDB(id) {
-  const review = await prisma.review.findUnique({
+  return await prisma.review.findUnique({
     where: { id },
     include: {
       user: { select: { id: true, username: true } },
@@ -62,6 +61,8 @@ export async function deleteReviewFromDB(id) {
     where: { id },
   });
 }
+
+export const deleteReviewInDB = deleteReviewFromDB;
 
 export async function getMovieReviewFromDB(movieId) {
   return await prisma.review.findMany({
