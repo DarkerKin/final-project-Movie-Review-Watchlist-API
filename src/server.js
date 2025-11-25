@@ -28,6 +28,11 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
+// ⭐ Root route so Render doesn’t 404 on "/"
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Movie Review Watchlist API is running' });
+});
+
 // Routes
 app.use('/movies', movieRoutes);
 app.use('/genres', genreRoutes);
