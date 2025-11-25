@@ -19,11 +19,7 @@ async function seed() {
   await prisma.$executeRaw`ALTER SEQUENCE "Movie_id_seq" RESTART WITH 1`;
   await prisma.$executeRaw`ALTER SEQUENCE "Review_id_seq" RESTART WITH 1`;
   await prisma.$executeRaw`ALTER SEQUENCE "Watchlist_id_seq" RESTART WITH 1`;
-
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/main
+  
   // Users
   const alice = await prisma.user.create({
     data: {
