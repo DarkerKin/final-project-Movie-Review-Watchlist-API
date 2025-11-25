@@ -435,7 +435,7 @@ paths:
               title: "New Movie"
               description: "Synopsis..."
               releaseYear: 2024
-              genreIds: [1, 3]
+              genres: [1, 3]
       responses:
         '201':
           description: Movie created
