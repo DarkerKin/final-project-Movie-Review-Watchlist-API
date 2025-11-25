@@ -10,7 +10,7 @@ import reviewRoutes from './routes/reviewRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import watchlistRoutes from './routes/watchlistRoutes.js'
 
-const swaggerDocument = YAML.load('./openapi.yaml');
+const swaggerDocument = YAML.load('./Docs/openapi.yaml');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
