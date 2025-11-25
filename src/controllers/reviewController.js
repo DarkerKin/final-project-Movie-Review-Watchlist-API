@@ -1,20 +1,21 @@
-import { getAllReviews, getReviewById, createReview, updateReview, deleteReview,} from '../services/reviewService.js';
+import {
+  getAllReviews,
+  getReviewById,
+  createReview,
+  updateReview,
+  deleteReview,
+} from '../services/reviewService.js';
 
 export async function getReviewsHandler(req, res) {
   try {
-<<<<<<< HEAD
     // support GET /reviews, GET /reviews?movieId=1, GET /reviews?userId=1, or both
     const movieId = req.query.movieId ? parseInt(req.query.movieId, 10) : undefined;
     const userId = req.query.userId ? parseInt(req.query.userId, 10) : undefined;
+
     const filter = {};
     if (movieId) filter.movieId = movieId;
     if (userId) filter.userId = userId;
-=======
-    // support GET /reviews and GET /reviews?movieId=1
-    const movieId = req.query.movieId ? parseInt(req.query.movieId, 10) : undefined;
-    const filter = {};
-    if (movieId) filter.movieId = movieId;
->>>>>>> origin/main
+
     const reviews = await getAllReviews(filter);
     res.status(200).json(reviews);
   } catch (err) {
@@ -27,7 +28,9 @@ export async function getReviewByIdHandler(req, res) {
   try {
     const id = parseInt(req.params.id, 10);
     const review = await getReviewById(id);
-    if (!review) return res.status(404).json({ message: 'Review not found' });
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
     res.status(200).json(review);
   } catch (err) {
     console.error(err);
@@ -37,13 +40,8 @@ export async function getReviewByIdHandler(req, res) {
 
 export async function createReviewHandler(req, res) {
   try {
-    // Expect body: { userId, movieId, rating, comment }
-    const { userId, movieId, rating, comment } = req.body;
-    if (!userId || !movieId || typeof rating !== 'number') {
-      return res.status(400).json({ message: 'userId, movieId and numeric rating are required' });
-    }
-    const created = await createReview({ userId, movieId, rating, comment });
-    res.status(201).json(created);
+    const review = await createReview(req.body);
+    res.status(201).json(review);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to create review' });
@@ -53,12 +51,8 @@ export async function createReviewHandler(req, res) {
 export async function updateReviewHandler(req, res) {
   try {
     const id = parseInt(req.params.id, 10);
-    const { rating, comment } = req.body;
-    if (typeof rating !== 'number' && comment === undefined) {
-      return res.status(400).json({ message: 'Provide rating (number) or comment to update' });
-    }
-    const updated = await updateReview(id, { rating, comment });
-    res.status(200).json(updated);
+    const updatedReview = await updateReview(id, req.body);
+    res.status(200).json(updatedReview);
   } catch (err) {
     console.error(err);
     if (err.code === 'P2025') {

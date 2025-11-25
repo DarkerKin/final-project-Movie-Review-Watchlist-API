@@ -1,23 +1,16 @@
 import prisma from '../config/db.js';
 
-<<<<<<< HEAD
-export async function getAllReviewsFromDB(filter = {}) {
-  // This can contain {movieId, userId}
-  const where = {};
-  if (filter.movieId) where.movieId = filter.movieId;
-  if (filter.userId) where.userId = filter.userId;
-=======
-export async function getReviewByUserID(userId){
-    return await prisma.review.findMany({
-        where:{userId}
-    })
+export async function getReviewByUserID(userId) {
+  return await prisma.review.findMany({
+    where: { userId },
+  });
 }
 
 export async function getAllReviewsFromDB(filter = {}) {
-  // This can contain {movieId}
+  // filter can contain { movieId, userId }
   const where = {};
   if (filter.movieId) where.movieId = filter.movieId;
->>>>>>> origin/main
+  if (filter.userId) where.userId = filter.userId;
 
   const reviews = await prisma.review.findMany({
     where,
@@ -41,61 +34,37 @@ export async function getReviewByIdFromDB(id) {
   return review;
 }
 
-export async function createReviewInDB(data) {
-  // The data format is: { userId, movieId, rating, comment }
-  const created = await prisma.review.create({
-    data: {
-      userId: data.userId,
-      movieId: data.movieId,
-      rating: data.rating,
-      comment: data.comment ?? null,
-    },
+export async function createReviewInDB(reviewData) {
+  const review = await prisma.review.create({
+    data: reviewData,
     include: {
       user: { select: { id: true, username: true } },
       movie: { select: { id: true, title: true } },
     },
   });
-  return created;
+  return review;
 }
 
-export async function updateReviewInDB(id, data) {
-  const updated = await prisma.review.update({
+export async function updateReviewInDB(id, reviewData) {
+  const review = await prisma.review.update({
     where: { id },
-    data: {
-      rating: data.rating,
-      comment: data.comment ?? null,
-    },
+    data: reviewData,
     include: {
       user: { select: { id: true, username: true } },
       movie: { select: { id: true, title: true } },
     },
   });
-  return updated;
+  return review;
 }
 
-export async function deleteReviewInDB(id) {
-  await prisma.review.delete({ where: { id } });
-  return;
-}
-
-<<<<<<< HEAD
-export async function getReviewByUserID(userId) {
-  return await prisma.review.findMany({
-    where: { userId },
-    orderBy: { createdAt: 'desc' },
-    include: {
-      user: { select: { id: true, username: true } },
-      movie: { select: { id: true, title: true } },
-    },
+export async function deleteReviewFromDB(id) {
+  return await prisma.review.delete({
+    where: { id },
   });
 }
-=======
+
 export async function getMovieReviewFromDB(movieId) {
-    const movieReview = prisma.review.findMany({
-        where:{
-           movieId 
-        }
-    })
-    return movieReview;
-} 
->>>>>>> origin/main
+  return await prisma.review.findMany({
+    where: { movieId },
+  });
+}

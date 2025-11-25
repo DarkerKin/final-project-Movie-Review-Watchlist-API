@@ -1,9 +1,6 @@
 import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from './handleValidationErrors.js';
-<<<<<<< HEAD
-=======
 import { getWatchlistById } from '../services/watchlistService.js';
->>>>>>> origin/main
 
 export const createWatchlistValidators = [
   body('userId')
@@ -20,15 +17,6 @@ export const createWatchlistValidators = [
 ];
 
 export const updateWatchlistValidators = [
-  param('id')
-    .exists().withMessage('id param is required')
-    .bail()
-    .isInt({ gt: 0 }).withMessage('id must be a positive integer')
-    .toInt(),
-  body('userId')
-    .optional()
-    .isInt({ gt: 0 }).withMessage('userId must be a positive integer')
-    .toInt(),
   body('movieId')
     .optional()
     .isInt({ gt: 0 }).withMessage('movieId must be a positive integer')
@@ -55,14 +43,11 @@ export const getWatchlistsValidators = [
     .isInt({ gt: 0 }).withMessage('movieId must be a positive integer')
     .toInt(),
   handleValidationErrors,
-<<<<<<< HEAD
-];
-=======
 ];
 
-export async function checkIfUserWatchlist(req,res,next){
-  let id = parseInt(req.params.id);
-  let watchlist = await getWatchlistById(id);
+export async function checkIfUserWatchlist(req, res, next) {
+  const id = parseInt(req.params.id, 10);
+  const watchlist = await getWatchlistById(id);
 
   if (!watchlist) {
     return res.status(404).json({ message: 'watchlist not found' });
@@ -71,6 +56,6 @@ export async function checkIfUserWatchlist(req,res,next){
   if (watchlist.userId !== req.user.id) {
     return res.status(403).json({ message: 'forbidden' });
   }
+
   next();
 }
->>>>>>> origin/main
