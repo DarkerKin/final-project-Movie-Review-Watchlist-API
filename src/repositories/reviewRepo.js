@@ -1,10 +1,23 @@
 import prisma from '../config/db.js';
 
+<<<<<<< HEAD
 export async function getAllReviewsFromDB(filter = {}) {
   // This can contain {movieId, userId}
   const where = {};
   if (filter.movieId) where.movieId = filter.movieId;
   if (filter.userId) where.userId = filter.userId;
+=======
+export async function getReviewByUserID(userId){
+    return await prisma.review.findMany({
+        where:{userId}
+    })
+}
+
+export async function getAllReviewsFromDB(filter = {}) {
+  // This can contain {movieId}
+  const where = {};
+  if (filter.movieId) where.movieId = filter.movieId;
+>>>>>>> origin/main
 
   const reviews = await prisma.review.findMany({
     where,
@@ -65,6 +78,7 @@ export async function deleteReviewInDB(id) {
   return;
 }
 
+<<<<<<< HEAD
 export async function getReviewByUserID(userId) {
   return await prisma.review.findMany({
     where: { userId },
@@ -75,3 +89,13 @@ export async function getReviewByUserID(userId) {
     },
   });
 }
+=======
+export async function getMovieReviewFromDB(movieId) {
+    const movieReview = prisma.review.findMany({
+        where:{
+           movieId 
+        }
+    })
+    return movieReview;
+} 
+>>>>>>> origin/main

@@ -2,12 +2,19 @@ import { getAllReviews, getReviewById, createReview, updateReview, deleteReview,
 
 export async function getReviewsHandler(req, res) {
   try {
+<<<<<<< HEAD
     // support GET /reviews, GET /reviews?movieId=1, GET /reviews?userId=1, or both
     const movieId = req.query.movieId ? parseInt(req.query.movieId, 10) : undefined;
     const userId = req.query.userId ? parseInt(req.query.userId, 10) : undefined;
     const filter = {};
     if (movieId) filter.movieId = movieId;
     if (userId) filter.userId = userId;
+=======
+    // support GET /reviews and GET /reviews?movieId=1
+    const movieId = req.query.movieId ? parseInt(req.query.movieId, 10) : undefined;
+    const filter = {};
+    if (movieId) filter.movieId = movieId;
+>>>>>>> origin/main
     const reviews = await getAllReviews(filter);
     res.status(200).json(reviews);
   } catch (err) {

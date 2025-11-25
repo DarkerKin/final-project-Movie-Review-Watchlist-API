@@ -108,7 +108,8 @@ export async function checkIfMovieWithIdExist(req, res, next) {
     const id = parseInt(req.params.id);
     const movieWithIdExists = await checkForMovieId(id);
     if (!movieWithIdExists) {
-        return res.status(404).json({ message: "Movie not found" });
+        res.status(404).json({ message: "Movie not found" });
+        return
     }
     next();
 }
