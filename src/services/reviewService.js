@@ -1,21 +1,45 @@
-import {getAllReviewsFromDB, getReviewByIdFromDB, createReviewInDB, updateReviewInDB, deleteReviewInDB,} from '../repositories/reviewRepo.js';
+import prisma from '../config/db.js';
 
-export async function getAllReviews(filter) {
-  return await getAllReviewsFromDB(filter);
+// GET ALL reviews with optional filters (movieId, userId)
+export async function getAllReviewsFromDB(filter) {
+  return await prisma.review.findMany({
+    where: filter,
+    include: {
+      movie: true,
+      user: true,
+    },
+  });
 }
 
-export async function getReviewById(id) {
-  return await getReviewByIdFromDB(id);
+// GET one review
+export async function getReviewByIdFromDB(id) {
+  return await prisma.review.findUnique({
+    where: { id },
+    include: {
+      movie: true,
+      user: true,
+    },
+  });
 }
 
-export async function createReview(payload) {
-  return await createReviewInDB(payload);
+// CREATE review
+export async function createReviewInDB(data) {
+  return await prisma.review.create({
+    data,
+  });
 }
 
-export async function updateReview(id, payload) {
-  return await updateReviewInDB(id, payload);
+// UPDATE review
+export async function updateReviewInDB(id, data) {
+  return await prisma.review.update({
+    where: { id },
+    data,
+  });
 }
 
-export async function deleteReview(id) {
-  return await deleteReviewInDB(id);
+// DELETE review
+export async function deleteReviewInDB(id) {
+  return await prisma.review.delete({
+    where: { id },
+  });
 }
